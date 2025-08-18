@@ -1,7 +1,7 @@
 package book.dto;
 
 import common.Tag;
-import java.util.Date;
+import java.time.LocalDate;
 
 
 
@@ -10,7 +10,7 @@ public record BookAllRequest (
         String title,
         String author,
         String description,
-        Date publishedDate,
+        LocalDate publishedDate,
         Tag tag
 ){}
 

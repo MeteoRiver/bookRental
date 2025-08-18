@@ -10,14 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class BookServiceImpl {
     @Autowired
     private BookRepository bookRepository;
 
-    public BookAllResponse createBook(BookRegisterRequest bookRegisterRequest) {
+    public BookAllResponseDTO createBook(BookRegisterRequest bookRegisterRequest) {
         Books save = new Books();
         save.setTitle(bookRegisterRequest.title());
         save.setAuthor(bookRegisterRequest.author());
@@ -27,10 +25,10 @@ public class BookServiceImpl {
 
         Books saved = bookRepository.save(save);
 
-        return BookAllResponse.fromEntity(saved);
+        return BookAllResponseDTO.fromEntity(saved);
     }
 
-    public BookAllResponse updateBook(BookAllRequest bookAllRequest) {
+    public BookAllResponseDTO updateBook(BookAllRequest bookAllRequest) {
 
         Books save = bookRepository.findById(bookAllRequest.id()).orElseThrow(()->new RuntimeException("ERROR수정"));
 
@@ -42,33 +40,33 @@ public class BookServiceImpl {
 
         Books updated = bookRepository.save(save);
 
-        return BookAllResponse.fromEntity(updated);
+        return BookAllResponseDTO.fromEntity(updated);
 
     }
 
     @Transactional(readOnly = true)
-    public Page<BookAllResponse> readAllBook(Pageable pageable) {
+    public Page<BookAllResponseDTO> readAllBook(Pageable pageable) {
         return bookRepository.findAllPageable(pageable)
-                .map(BookAllResponse::fromEntity);
+                .map(BookAllResponseDTO::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public BookAllResponse readOneBook(Long id){
+    public BookAllResponseDTO readOneBook(Long id){
         return bookRepository.findById(id)
-                .map(BookAllResponse::fromEntity)
+                .map(BookAllResponseDTO::fromEntity)
                 .orElseThrow(()->new EntityNotFoundException("에러"));
     }
 
     @Transactional(readOnly = true)
-    public Page<BookAllResponse> readOneBookByTitle(String title, Pageable pageable){
+    public Page<BookAllResponseDTO> readOneBookByTitle(String title, Pageable pageable){
         return bookRepository.findByTitlePageable(title, pageable)
-                .map(BookAllResponse::fromEntity);
+                .map(BookAllResponseDTO::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public Page<BookAllResponse> readOneBookByAuthor(String author, Pageable pageable){
+    public Page<BookAllResponseDTO> readOneBookByAuthor(String author, Pageable pageable){
         return bookRepository.findByAuthorPageable(author, pageable)
-            .map(BookAllResponse::fromEntity);
+            .map(BookAllResponseDTO::fromEntity);
     }
 
     public BookDeleteResponse deleteBook(Long id) {

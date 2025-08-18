@@ -4,18 +4,17 @@ import book.entity.Books;
 import common.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
 public record BookRegisterRequest(
     @NotBlank String title,
     @NotBlank String author,
     @NotBlank String description,
-    @NotNull Date publishedDate,
+    @NotNull LocalDate publishedDate,
     @NotNull Tag tag
 ){
     public BookRegisterRequest toEntity(Books book) {

@@ -2,6 +2,7 @@ package book.entity;
 
 import common.Tag;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class Books {
 
     private String description;
 
-    private Date publishDate;
+    private LocalDate publishDate;
 
     @Enumerated(EnumType.ORDINAL)
     private Tag tag;
