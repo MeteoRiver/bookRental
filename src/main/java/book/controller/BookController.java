@@ -2,7 +2,7 @@ package book.controller;
 
 import book.dto.BookAllRequest;
 import book.dto.BookRegisterRequest;
-import book.service.Impl.BookServiceImpl;
+import book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     @Autowired
-    BookServiceImpl bookService;
+    BookService bookService;
 
     @PostMapping
     public ResponseEntity<?> addBook(@RequestBody BookRegisterRequest bookRegisterRequest) {

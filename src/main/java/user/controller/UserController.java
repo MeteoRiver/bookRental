@@ -1,6 +1,5 @@
 package user.controller;
 
-import book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import user.dto.UserRequestDTO;
-import user.dto.UserResponseDTO;
 import user.service.UserService;
 
 @RestController
