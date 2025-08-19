@@ -1,0 +1,18 @@
+spring:
+#  datasource:
+#    url: jdbc:mysql://127.0.0.1:3306/paranjwt
+#    username: root
+#    password: 1234
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  jwt:
+    secret: 80d0f49aacda55f952ff27acda9974f057378ae16a528b0ac35593652b1983b7
+    refreshSecret: cda97378ae16a99745f952ffb0ac3573785593652b80da55f9974f365952b52b
