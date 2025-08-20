@@ -2,11 +2,14 @@ package jwt;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class JwtService {
 
+    @Autowired
     private RedisTemplate<String, String> redisTemplate;
     // Key helpers (네임스페이스 분리)
     private String Refresh(String jti) { return "refresh:" + jti; }

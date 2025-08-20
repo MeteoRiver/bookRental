@@ -12,8 +12,9 @@ import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-public class JwtFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final JwtService jwtService;
@@ -23,7 +24,7 @@ public class JwtFilter {
         this.jwtService = jwtService;
     }
 
-    protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         String token = getToken(req);
         if (token == null) {

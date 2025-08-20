@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,12 +39,13 @@ public class JwtUtil {
 
     public String createJwtRefresh(Long id, String name, Role role) {
         Date now = new Date();
-        Date exp = new Date(now.getTime() + 604800);
+        long ttlMs = 604_800_000L; // 7 days in milliseconds
+        Date exp = new Date(now.getTime() + ttlMs);
+
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .claim("category", "refresh")
                 .subject(String.valueOf(id))
-                .claim("name",name)
-                .claim("role",role.name())
                 .issuer("MeteoRiver")
                 .issuedAt(now)
                 .expiration(exp)
@@ -73,4 +75,31 @@ public class JwtUtil {
     public String getId(Claims claims) { return claims.getId(); }
     public String getName(Claims claims) { return claims.get("name").toString(); }
     public String getRole(Claims claims)     { return claims.get("role").toString(); }
+    public String extractJti(String Token) {
+        return parseAccess(Token).getPayload().getId();
+    }
+    public long remainingMs(String Token) {
+        Date exp = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(Token).getPayload().getExpiration();
+        return  Math.max(0, exp.getTime() - System.currentTimeMillis());
+    }
+    public String extractRefreshJti(String refreshToken) {
+        return Jwts.parser()
+                .verifyWith(refreshSecret)
+                .build()
+                .parseSignedClaims(refreshToken)
+                .getPayload()
+                .getId(); // jti
+    }
+
+    public long remainingRefreshMillis(String refreshToken) {
+        Date exp = Jwts.parser()
+                .verifyWith(refreshSecret)
+                .build()
+                .parseSignedClaims(refreshToken)
+                .getPayload()
+                .getExpiration();
+        long remain = exp.getTime() - System.currentTimeMillis();
+        return Math.max(0L, remain);
+    }
+
 }
