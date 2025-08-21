@@ -1,14 +1,20 @@
 package com.metoeriver.library.book.service;
 
-import book.dto.*;
 import com.metoeriver.library.book.dto.BookAllRequest;
 import com.metoeriver.library.book.dto.BookAllResponseDTO;
 import com.metoeriver.library.book.dto.BookDeleteResponse;
 import com.metoeriver.library.book.dto.BookRegisterRequest;
 import com.metoeriver.library.book.entity.Books;
+import com.metoeriver.library.book.entity.Tags;
 import com.metoeriver.library.book.repository.BookRepository;
+import com.metoeriver.library.book.repository.TagRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,15 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BookService {
-    @Autowired
+
     private BookRepository bookRepository;
+    private TagRepository tagRepository;
+
 
     public BookAllResponseDTO createBook(BookRegisterRequest bookRegisterRequest) {
         Books save = new Books();
         save.setTitle(bookRegisterRequest.title());
         save.setAuthor(bookRegisterRequest.author());
         save.setDescription(bookRegisterRequest.description());
-        save.setTag(bookRegisterRequest.tag());
+        save.setTags(resolveTags(bookRegisterRequest.tags()));
         save.setPublishDate(bookRegisterRequest.publishedDate());
 
         Books saved = bookRepository.save(save);
@@ -39,7 +47,7 @@ public class BookService {
         save.setTitle(bookAllRequest.title());
         save.setAuthor(bookAllRequest.author());
         save.setDescription(bookAllRequest.description());
-        save.setTag(bookAllRequest.tag());
+        save.setTags(resolveTags((Collection<String>) bookAllRequest.tag()));
         save.setPublishDate(bookAllRequest.publishedDate());
 
         Books updated = bookRepository.save(save);
@@ -81,5 +89,29 @@ public class BookService {
         BookDeleteResponse bookDeleteResponse = new BookDeleteResponse();
         bookDeleteResponse.setResult(!bookRepository.existsById(id));
         return bookDeleteResponse;
+    }
+
+    private Set<Tags> resolveTags(Collection<String> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return new HashSet<>();
+        }
+        Set<Tags> result = new HashSet<>();
+        for (String raw : tags) {
+            String name = (raw == null) ? null : raw.trim();
+            if (name == null || name.isEmpty()) {
+                continue;
+            }
+            Tags tag = tagRepository.findByNameIgnoreCase(name)
+                    .orElseGet(() -> {
+                        try {
+                            return tagRepository.save(Tags.builder().name(name).build());
+                        } catch (DataIntegrityViolationException e) {
+                            return tagRepository.findByNameIgnoreCase(name)
+                                    .orElseThrow(() -> e);
+                        }
+                    });
+            result.add(tag);
+        }
+        return result;
     }
 }

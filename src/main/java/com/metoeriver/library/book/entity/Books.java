@@ -1,8 +1,9 @@
 package com.metoeriver.library.book.entity;
 
-import com.metoeriver.library.common.Tag;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,5 @@ public class Books {
 
     private LocalDate publishDate;
 
-    @Enumerated(EnumType.ORDINAL)
-    private Tag tag;
+    private Set<Tags> tags = new HashSet<>();
 }
