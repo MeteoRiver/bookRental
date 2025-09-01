@@ -1,8 +1,7 @@
 package com.metoeriver.library.book.dto;
 
-import com.metoeriver.library.book.entity.Tags;
 import java.time.LocalDate;
-
+import java.util.List;
 
 
 public record BookAllRequest (
@@ -11,6 +10,6 @@ public record BookAllRequest (
         String author,
         String description,
         LocalDate publishedDate,
-        Tags tag
+        List<String> tag
 ){}
 

@@ -3,6 +3,7 @@ package com.metoeriver.library.book.controller;
 import com.metoeriver.library.book.dto.BookAllRequest;
 import com.metoeriver.library.book.dto.BookRegisterRequest;
 import com.metoeriver.library.book.service.BookService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +50,14 @@ public class BookController {
     @DeleteMapping
     public ResponseEntity<?> deleteBookById(@RequestParam("id") Long id) {
         return ResponseEntity.ok(bookService.deleteBook(id));
+    }
+
+    @GetMapping("/books")
+    public ResponseEntity<?> list(
+            @RequestParam(required = false) List<String> tags,
+            @RequestParam(defaultValue = "any") String mode,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(bookService.readByTags(tags, mode, pageable));
     }
 }

@@ -24,5 +24,12 @@ public class Books {
 
     private LocalDate publishDate;
 
+    @ManyToMany
+    @JoinTable(
+            name = "book_tags",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private Set<Tags> tags = new HashSet<>();
+
 }

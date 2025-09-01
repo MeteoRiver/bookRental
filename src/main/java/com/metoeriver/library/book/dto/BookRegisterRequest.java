@@ -5,6 +5,7 @@ import com.metoeriver.library.book.entity.Tags;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,7 @@ public record BookRegisterRequest(
     @NotBlank String author,
     @NotBlank String description,
     @NotNull LocalDate publishedDate,
-    @NotNull Set<String> tags
+    @NotNull List<String> tags
 ){
     public BookRegisterRequest toEntity(Books book) {
         return new BookRegisterRequest(
@@ -21,7 +22,7 @@ public record BookRegisterRequest(
                 book.getAuthor(),
                 book.getDescription(),
                 book.getPublishDate(),
-                book.getTags().stream().map(Tags::getName).collect(Collectors.toSet())
+                book.getTags().stream().map(Tags::getName).collect(Collectors.toList())
         );
     }
 

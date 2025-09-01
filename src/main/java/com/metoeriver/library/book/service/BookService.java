@@ -47,7 +47,7 @@ public class BookService {
         save.setTitle(bookAllRequest.title());
         save.setAuthor(bookAllRequest.author());
         save.setDescription(bookAllRequest.description());
-        save.setTags(resolveTags((Collection<String>) bookAllRequest.tag()));
+        save.setTags(resolveTags(bookAllRequest.tag()));
         save.setPublishDate(bookAllRequest.publishedDate());
 
         Books updated = bookRepository.save(save);
@@ -114,4 +114,17 @@ public class BookService {
         }
         return result;
     }
+
+    @Transactional(readOnly = true)
+    public Page<BookAllResponseDTO> readByTags(java.util.List<String> tags, String mode, Pageable pageable) {
+        if (tags == null || tags.isEmpty()) {
+            return readAllBook(pageable);
+        }
+        var names = tags.stream().map(s -> s.toLowerCase(java.util.Locale.ROOT)).toList();
+        var page = "all".equalsIgnoreCase(mode)
+                ? bookRepository.findAllByTagNames(names, names.size(), pageable)
+                : bookRepository.findAnyByTagNames(names, pageable);
+        return page.map(BookAllResponseDTO::fromEntity);
+    }
+
 }
